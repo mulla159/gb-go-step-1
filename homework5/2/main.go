@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+var fibNumbers = map[int]int{0: 0, 1: 1}
+
 func main() {
 	var number int
 	fmt.Println("Введите число: ")
@@ -13,8 +15,6 @@ func main() {
 }
 
 func getFibonacci(n int) int {
-	fibNumbers := map[int]int{0: 0, 1: 1}
-
 	if val, exists := fibNumbers[n]; exists {
 		return val
 	}

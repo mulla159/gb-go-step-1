@@ -1,9 +1,8 @@
-# Пример распарсивания JSON-файла в структуру с помощью библиотеки [encoding/json](https://pkg.go.dev/encoding/json)
+# Приложение, читающее конфигурацию из JSON-файла в структуру с помощью библиотеки [encoding/json](https://pkg.go.dev/encoding/json)
 
-Переменные окружения `gb-go-step-1/homework9/1/config/app.json`
+JSON-файл с конфигурацией: `gb-go-step-1/homework9/1/main/conf.json`
 
 # Запускаем приложение
 ```Bash
-cd gb-go-step-1/homework9/1
-go run ./main/main.go
+go run main/main.go --fn=main/conf.json
 ```

@@ -1,38 +1,43 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 type CustomURL struct {
 	Value *url.URL
 }
 
-func (cu *CustomURL) UnmarshalJSON(data []byte) error {
+func (cu *CustomURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var urlString string
 
-	err := json.Unmarshal(data, &urlString)
+	err := unmarshal(&urlString)
 	if err != nil {
 		return err
 	}
 
 	u, err := url.ParseRequestURI(urlString)
+	if err != nil {
+		return err
+	}
+
 	cu.Value = u
-	return err
+	return nil
 }
 
 type AppConfig struct {
-	Port        int       `json:"port"`
-	DbURL       CustomURL `json:"db_url"`
-	JaegerURL   CustomURL `json:"jaeger_url"`
-	SentryURL   CustomURL `json:"sentry_url"`
-	KafkaBroker string    `json:"kafka_broker"`
-	SomeAppID   string    `json:"some_app_id"`
-	SomeAppKey  string    `json:"some_app_key"`
+	Port        int       `yaml:"port"`
+	DbURL       CustomURL `yaml:"db_url"`
+	JaegerURL   CustomURL `yaml:"jaeger_url"`
+	SentryURL   CustomURL `yaml:"sentry_url"`
+	KafkaBroker string    `yaml:"kafka_broker"`
+	SomeAppID   string    `yaml:"some_app_id"`
+	SomeAppKey  string    `yaml:"some_app_key"`
 }
 
 func (conf *AppConfig) Get(fileName string) {
@@ -42,19 +47,18 @@ func (conf *AppConfig) Get(fileName string) {
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		log.Fatalf("Не могу открыть файл: %v", err)
+		log.Fatalf("Ошибка при открытии файла конфигурации: %v", err)
 	}
 
 	defer func() {
 		err := file.Close()
 		if err != nil {
-			log.Fatalf("Не могу закрыть файл: %v\n", err)
+			log.Fatalf("Ошибка при закрыттии файла конфигурации: %v\n", err)
 		}
 	}()
 
-	err = json.NewDecoder(file).Decode(&conf)
-	if err != nil {
-		log.Fatalf("Не могу декодировать json-файл в структуру: %v\n", err)
+	if err := yaml.NewDecoder(file).Decode(&conf); err != nil {
+		log.Fatalf("Ошибка при декодировании yaml-файла в структуру: %v\n", err)
 	}
 }
 

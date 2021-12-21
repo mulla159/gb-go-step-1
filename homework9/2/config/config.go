@@ -9,9 +9,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-type CustomURL struct {
-	Value *url.URL
-}
+type CustomURL url.URL
 
 func (cu *CustomURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var urlString string
@@ -26,7 +24,7 @@ func (cu *CustomURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return err
 	}
 
-	cu.Value = u
+	*cu = CustomURL(*u)
 	return nil
 }
 

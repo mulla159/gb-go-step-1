@@ -8,9 +8,7 @@ import (
 	"os"
 )
 
-type CustomURL struct {
-	Value *url.URL
-}
+type CustomURL url.URL
 
 func (cu *CustomURL) UnmarshalJSON(data []byte) error {
 	var urlString string
@@ -21,7 +19,8 @@ func (cu *CustomURL) UnmarshalJSON(data []byte) error {
 	}
 
 	u, err := url.ParseRequestURI(urlString)
-	cu.Value = u
+
+	*cu = CustomURL(*u)
 	return err
 }
 
